@@ -1,11 +1,15 @@
-# elapy
-This is a Python implementation of Energy Landscape Analysis Toolkit (ELAT). An Ising model is fit to the input data that should be a {0,1}-valued or {-1,1}-valued matrix. From the estimated Ising model, local minima, basins of attractions, and a disconnectivity graph that shows the minimum values of the maximum energy of intermediate states passed when moving between local minima are calculated. For more details, please see the original repository or the original paper shown below.
+# About elapy
+This is a Python implementation of Energy Landscape Analysis Toolkit/Toolbox (ELAT). An Ising model is fit to the input data that should be a {0,1}-valued or {-1,1}-valued matrix. From the estimated Ising model, local minima, basins of attractions, and a disconnectivity graph that shows the minimum values of the maximum energy of intermediate states passed when moving between local minima are calculated. For more details, please see the original repository or the original paper shown below.
 
 The original Matlab codes written by Dr. T. Ezaki are available at: https://github.com/tkEzaki/energy-landscape-analysis.
 
 The original paper (T. Ezaki, et al., Philos. Trans. A Math. Phys. Eng. Sci., 2017) is available at: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5434078/. 
 
 Japanese documents are also avaiable at the original codes' author's website: https://sites.google.com/site/ezakitakahiro/software.
+
+# Open notebook
+- [Open notebook in Colab](https://colab.research.google.com/github/okumakito/elapy/blob/main/elapy.ipynb) (executable)
+- [Open notebook in GitHub](https://github.com/okumakito/elapy/blob/main/elapy.ipynb) (not executable)
 
 # Required packages
 numpy, scipy, pandas, matplotlib, seaborn, and networkx
@@ -46,3 +50,7 @@ git clone https://github.com/okumakito/elapy.git
   ela.plot_discon_graph(D)
   ```
  
+# Major differences from the original codes
+
+* Each {0,1}-valued vector is encoded to a decimal value differently from the original codes. The last element is taken as the most significant bit (MSB) in the original codes (for example, [0,0,0,1] -> 8) whereas the first element is taken as the MSB in this implementation (for example, [0,0,0,1] -> 1).
+* 3D plot of a basin graph is not provided in this repository.
