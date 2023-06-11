@@ -10,8 +10,8 @@ import networkx as nx
 # m: number of all states, 2**n
 
 def load_testdata(n=1):
-  data_file_name = f'../data/orig/testdata_{n}.dat'
-  roi_file_name = '../data/orig/roiname.dat'
+  data_file_name = f'test_data/testdata_{n}.dat'
+  roi_file_name = 'test_data/roiname.dat'
   X = pd.read_table(data_file_name, header=None)
   X.index = pd.read_csv(roi_file_name, header=None).squeeze()
   return (X==1).astype(int)
