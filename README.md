@@ -41,8 +41,8 @@ git clone https://github.com/okumakito/elapy.git
   ```
 * Plot figures
   ```
-  ela.plot_local_min.py
-  ela.plot_basin_graph.py
-  ela.plot_discon_graph.py
+  ela.plot_local_min(data, graph)
+  ela.plot_basin_graph(graph)
+  ela.plot_discon_graph(D)
   ```
  
