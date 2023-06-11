@@ -25,7 +25,7 @@ git clone https://github.com/okumakito/elapy.git
   ```
   data = ela.load_testdata(1)  # the argument is 1, 2, 3, or 4
   ```
-* Fit the data to an Ising model. Please choose one from the two functions below depending on the data size.
+* Fit an Ising model to the data. Please choose one from the two functions below depending on the data size.
 
   ```
   h, W = ela.fit_exact(data)  # exact fitting based on likelihood function
