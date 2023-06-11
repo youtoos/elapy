@@ -16,7 +16,7 @@ def plot_basin_graph(graph):
   fig, axes = plt.subplots(figsize=(3*ncols, 3*nrows),
                            ncols=ncols, nrows=nrows)
   axes = axes.flatten()
-  for (basin_id, n_node), ax in zip(sr.iteritems(), axes):
+  for (basin_id, n_node), ax in zip(sr.items(), axes):
     df = graph[graph.basin_id==basin_id]
     G1 = nx.from_pandas_edgelist(df, create_using=nx.Graph)
     G2 = nx.from_pandas_edgelist(df, create_using=nx.DiGraph)
