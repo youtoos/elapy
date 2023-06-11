@@ -1,5 +1,5 @@
 # elapy
-This is a Python implementation of Energy Landscape Analysis Toolkit (ELAT). An Ising model is fit to the input data that should be a {0,1}-valued or {-1,1}-valued matrix. From the estimated Ising model, local minima, basins of attractions, and a disconnectivity graph that shows minimum energy required to move between local minima are calculated. For more details, please see the original repository or the original paper shown below.
+This is a Python implementation of Energy Landscape Analysis Toolkit (ELAT). An Ising model is fit to the input data that should be a {0,1}-valued or {-1,1}-valued matrix. From the estimated Ising model, local minima, basins of attractions, and a disconnectivity graph that shows the minimum values of the maximum energy of intermediate states passed when moving between local minima are calculated. For more details, please see the original repository or the original paper shown below.
 
 The original Matlab codes written by Dr. T. Ezaki are available at: https://github.com/tkEzaki/energy-landscape-analysis.
 
@@ -21,7 +21,7 @@ git clone https://github.com/okumakito/elapy.git
   ```
   import elapy as ela
   ```
-* Convert your data to a {-1,1}-valued pandas DataFrame object with rows represents variables and columns represents observations or time points. You can load the test data provided by the original repository (https://github.com/tkEzaki/energy-landscape-analysis) by the following command:
+* Convert your data to a {0,1}-valued pandas DataFrame object with rows represents variables and columns represents observations or time points. You can load a test data provided by the original repository (https://github.com/tkEzaki/energy-landscape-analysis) by the following command:
   ```
   data = ela.load_testdata(1)  # the argument is 1, 2, 3, or 4
   ```
