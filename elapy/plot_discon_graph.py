@@ -31,12 +31,13 @@ def plot_discon_graph(D_in):
   ax.set_xticklabels(D.index)
   ax.tick_params(length=5)
   ax.margins(0.1)
-  ax.set_xlabel('Local minima')
+  ax.set_xlabel('State number')
   ax.set_ylabel('Energy')
   ax.set_title('Disconnectivity graph', fontsize=16, pad=10)
   sns.despine()
   fig.tight_layout()
   fig.show()
+  fig.savefig('fig_discon_graph.png')
 
 if __name__ == '__main__':
   plot_discon_graph(D)

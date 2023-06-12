@@ -2,9 +2,9 @@ import numpy as np
 import pandas as pd
 import networkx as nx
 
-# Notation
+# Notations
 # W: weight matrix
-# h: coefficient vector
+# h: external field
 # n: number of variables
 # k: number of observations
 # m: number of all states, 2**n
@@ -90,11 +90,11 @@ def calc_accuracy(h, W, X):
   p_2   = calc_prob(h, W, X_all)
   def entropy(p):
     return (-p * np.log2(p)).sum()
-  r  = (entropy(p_1) - entropy(p_2)) / (entropy(p_1) - entropy(p_n))
-  d1 = (p_n * np.log2(p_n / p_1.iloc[p_n.index])).sum()
-  d2 = (p_n * np.log2(p_n / p_2.iloc[p_n.index])).sum()
-  rd = (d1-d2)/d1
-  print(r, rd)
+  acc1 = (entropy(p_1) - entropy(p_2)) / (entropy(p_1) - entropy(p_n))
+  d1   = (p_n * np.log2(p_n / p_1.iloc[p_n.index])).sum()
+  d2   = (p_n * np.log2(p_n / p_2.iloc[p_n.index])).sum()
+  acc2  = (d1-d2)/d1
+  return acc1, acc2
 
 def calc_adjacent(X):
   X_all = gen_all_state(X)
@@ -115,14 +115,16 @@ def calc_basin_graph(h, W, X):
   graph['target'] = A.values[A.index, min_idx]
   graph['energy'] = energy
   G = nx.from_pandas_edgelist(graph, create_using=nx.DiGraph)
-  graph['basin_id'] = 0
-  for i, node_set in enumerate(nx.weakly_connected_components(G)):
-    graph.loc[list(node_set),'basin_id'] = i
+  graph['state_no'] = None
+  conn = sorted(nx.weakly_connected_components(G), key=len)[::-1]
+  for i, node_set in enumerate(conn):
+    graph.loc[list(node_set),'state_no'] = i + 1
   return graph
 
 def calc_trans(X, graph):
-  sr = graph.loc[calc_state_no(X)].basin_id
+  sr = graph.loc[calc_state_no(X)].state_no
   freq = sr.value_counts().sort_index()
+  freq.name = 'freq'
   sr = sr[sr.diff()!=0]  # change points only
   trans = pd.crosstab(sr.values[:-1], sr.values[1:])
   trans.index.name ='src'
@@ -160,10 +162,13 @@ def calc_discon_graph(h, W, X, graph):
   X_all = gen_all_state(X)
   A = calc_adjacent(X).values[:, 1:]  # remove self-loop
   H = calc_energy(h, W, X_all).values
-  local_idx = graph[graph.source==graph.target].index
+  df = graph[graph.source==graph.target]
+  local_idx = df.index
   out_list = []
   for i_input in local_idx:
     C = calc_discon_graph_sub(i_input, H, A)
     out_list.append(C[local_idx])
-  D = pd.DataFrame(np.array(out_list), index=local_idx, columns=local_idx)
+  D = pd.DataFrame(np.array(out_list), index=df.state_no,
+                   columns=df.state_no)
+  D = D.sort_index().sort_index(axis=1)
   return D

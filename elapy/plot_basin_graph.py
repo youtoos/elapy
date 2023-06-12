@@ -5,8 +5,19 @@ import seaborn as sns
 import networkx as nx
 sns.set_context('talk', font_scale=0.8)
 
-def plot_basin_graph(graph):
-  sr = graph.basin_id.value_counts()
+def convert_orig(sr, n):
+  return sr.apply(bin).str.split('b').str[1].str.rjust(n, '0').\
+    str[::-1].apply(int, args=(2,))+1
+
+def plot_basin_graph(graph_in, original_notation=False):
+  graph = graph_in.copy()
+  if original_notation:
+    n = int(np.log2(len(graph)))
+    graph.index = convert_orig(graph.index.to_series(), n)
+    graph['source'] = convert_orig(graph.source, n)
+    graph['target'] = convert_orig(graph.target, n)
+
+  sr = graph.state_no.value_counts()
   ncols = int(np.ceil(sr.size**0.5))
   nrows = int(np.ceil(sr.size / ncols))
   vmin = graph.energy.min()
@@ -16,8 +27,8 @@ def plot_basin_graph(graph):
   fig, axes = plt.subplots(figsize=(3*ncols, 3*nrows),
                            ncols=ncols, nrows=nrows)
   axes = axes.flatten()
-  for (basin_id, n_node), ax in zip(sr.items(), axes):
-    df = graph[graph.basin_id==basin_id]
+  for (state_no, n_node), ax in zip(sr.items(), axes):
+    df = graph[graph.state_no==state_no]
     G1 = nx.from_pandas_edgelist(df, create_using=nx.Graph)
     G2 = nx.from_pandas_edgelist(df, create_using=nx.DiGraph)
     pos = nx.spring_layout(G1, seed=0, k=1/df.size**0.2)
@@ -28,11 +39,14 @@ def plot_basin_graph(graph):
                      vmin=vmin, vmax=vmax, cmap='RdYlGn',
                      node_color=df.loc[list(G2.nodes)].energy,
                      edge_color='0.1', font_color='0.1')
+    ax.text(0.05, 0.95, f'State {state_no}', transform=ax.transAxes)
     ax.margins(0.1)
   for ax in axes:
     ax.axis('off')
-  fig.tight_layout(pad=0)
+  fig.suptitle('Basin graph')
+  fig.tight_layout(pad=0, rect=[0,0,1,0.9])
   fig.show()
+  fig.savefig('fig_basin_graph.png')
 
 
 if __name__ == '__main__':
