@@ -17,7 +17,7 @@ def plot_basin_graph(graph_in, original_notation=False):
     graph['source'] = convert_orig(graph.source, n)
     graph['target'] = convert_orig(graph.target, n)
 
-  sr = graph.state_no.value_counts()
+  sr = graph.state_no.value_counts().sort_index()
   ncols = int(np.ceil(sr.size**0.5))
   nrows = int(np.ceil(sr.size / ncols))
   vmin = graph.energy.min()
