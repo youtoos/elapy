@@ -36,7 +36,7 @@ def plot_basin_graph(graph_in, original_notation=False):
     font_size = 50 / len(df)**0.5
     nx.draw_networkx(G2, pos=pos, ax=ax,
                      node_size=node_size, font_size=font_size,
-                     vmin=vmin, vmax=vmax, cmap='RdYlGn',
+                     vmin=vmin, vmax=vmax, cmap='RdYlBu',
                      node_color=df.loc[list(G2.nodes)].energy,
                      edge_color='0.1', font_color='0.1')
     ax.text(0.05, 0.95, f'State {state_no}', transform=ax.transAxes)
@@ -45,6 +45,16 @@ def plot_basin_graph(graph_in, original_notation=False):
     ax.axis('off')
   fig.suptitle('Basin graph')
   fig.tight_layout(pad=0, rect=[0,0,1,0.9])
+
+  # color bar
+  ax = fig.add_axes([0.8, 0.92, 0.12, 0.02])
+  sns.heatmap([np.arange(100)], cbar=False, cmap='RdYlBu', ax=ax)
+  ax.set_yticks([])
+  ax.set_xticks([0,99])
+  ax.set_xticklabels([f'{vmin:.3g}', f'{vmax:.3g}'], rotation=0)
+  ax.tick_params(length=0)
+  ax.set_title('Energy')
+
   fig.show()
   fig.savefig('fig_basin_graph.png')
 
