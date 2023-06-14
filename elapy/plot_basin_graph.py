@@ -20,10 +20,10 @@ def plot_basin_graph(graph_in, original_notation=False):
   sr = graph.state_no.value_counts().sort_index()
   ncols = int(np.ceil(sr.size**0.5))
   nrows = int(np.ceil(sr.size / ncols))
-  vmin = graph.energy.min()
-  vmax = graph.energy.max()
-  vmin -= 0.1 * (vmax - vmin)
-  vmax += 0.1 * (vmax - vmin)
+  min_val = graph.energy.min()
+  max_val = graph.energy.max()
+  vmin = min_val - 0.2 * (max_val - min_val)
+  vmax = max_val + 0.2 * (max_val - min_val)
   fig, axes = plt.subplots(figsize=(3*ncols, 3*nrows),
                            ncols=ncols, nrows=nrows)
   axes = axes.flatten()
@@ -48,10 +48,12 @@ def plot_basin_graph(graph_in, original_notation=False):
 
   # color bar
   ax = fig.add_axes([0.8, 0.92, 0.12, 0.02])
-  sns.heatmap([np.arange(100)], cbar=False, cmap='RdYlBu', ax=ax)
+  n_cb = 100
+  sns.heatmap([min_val + (max_val-min_val) * np.arange(n_cb)/n_cb],
+              cbar=False, cmap='RdYlBu', ax=ax, vmin=vmin, vmax=vmax)
   ax.set_yticks([])
-  ax.set_xticks([0,99])
-  ax.set_xticklabels([f'{vmin:.3g}', f'{vmax:.3g}'], rotation=0)
+  ax.set_xticks([0,n_cb])
+  ax.set_xticklabels([f'{min_val:.3g}', f'{max_val:.3g}'], rotation=0)
   ax.tick_params(length=0)
   ax.set_title('Energy')
 
