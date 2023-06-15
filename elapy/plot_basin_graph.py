@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import networkx as nx
+from .core import uniform_layout
 sns.set_context('talk', font_scale=0.8)
 
 def convert_orig(sr, n):
@@ -31,16 +32,17 @@ def plot_basin_graph(graph_in, original_notation=False):
     df = graph[graph.state_no==state_no]
     G1 = nx.from_pandas_edgelist(df, create_using=nx.Graph)
     G2 = nx.from_pandas_edgelist(df, create_using=nx.DiGraph)
-    pos = nx.spring_layout(G1, seed=0, k=1/df.size**0.2)
+    pos = uniform_layout(G1, seed=0)
     node_size = 2000 / len(df)**0.5
-    font_size = 50 / len(df)**0.5
+    font_size = node_size**0.5 / 2
     nx.draw_networkx(G2, pos=pos, ax=ax,
                      node_size=node_size, font_size=font_size,
                      vmin=vmin, vmax=vmax, cmap='RdYlBu',
                      node_color=df.loc[list(G2.nodes)].energy,
+                     linewidths=1, edgecolors='0.1',
                      edge_color='0.1', font_color='0.1')
     ax.text(0.05, 0.95, f'State {state_no}', transform=ax.transAxes)
-    ax.margins(0.1)
+    ax.margins(0.1, 0.2)
   for ax in axes:
     ax.axis('off')
   fig.suptitle('Basin graph')
