@@ -51,6 +51,10 @@ git clone https://github.com/okumakito/elapy.git
   ```
   freq, trans, trans2 = ela.calc_trans(data, graph)
   ```
+* Calculate transition matrix based on Boltzmann machine.
+  ```
+  P = ela.calc_trans_bm(h, W, data)
+  ```
 * Plot figures
   ```
   ela.plot_local_min(data, graph)
@@ -66,3 +70,4 @@ git clone https://github.com/okumakito/elapy.git
   ela.plot_basin_graph(graph, original_notation=True)
   ```
 * 3D plot of a basin graph is not provided in this repository.
+* `calc_trans_bm` is added to calculate the transition matrix based on Boltzmann machine.
