@@ -174,17 +174,26 @@ def calc_discon_graph(h, W, X, graph):
   D = D.sort_index().sort_index(axis=1)
   return D
 
-def uniform_layout(G, alpha=0.1, n_iter=None, seed=None):
-  pos = nx.spring_layout(G, seed=seed)
-  df = pd.DataFrame([(v,x,y) for v,(x,y) in pos.items()],
-                    columns=['node','x','y'])
-  df = df.set_index('node').sort_index()
+def uniform_layout(G, alpha=0.1, n_iter=None, seed=None, **kwargs):
+  pos = nx.spring_layout(G, seed=seed, **kwargs)
+  X = np.array(list(pos.values()))
   if n_iter == None:
     n_iter = 10 * len(G)
   for _ in range(n_iter):
-    dist_df = pd.DataFrame(distance.squareform(distance.pdist(df)),
-                           index=df.index, columns=df.index)
-    np.fill_diagonal(dist_df.values, None)
-    df += alpha * (df - df.loc[dist_df.idxmin()].values)
-    df = df.clip(-1,1)
-  return df.apply(np.array, axis=1).to_dict()
+    D = distance.squareform(distance.pdist(X))
+    np.fill_diagonal(D, None)
+    X += alpha * (X - X[np.nanargmin(D, axis=0)])
+    X = X.clip(-1,1)
+  return dict(zip(pos.keys(), X))
+
+def calc_trans_bm(h, W, X):
+  X_all  = gen_all_state(X)
+  X2_all = 2 * X_all - 1
+  Y      = W.dot(X2_all).T + h
+  Q      = 1/(1+np.exp(-Y))
+  out_list = []
+  for _, q in Q.iterrows():
+    p = (X_all.T * q + (1-X_all).T * (1-q)).T.prod()
+    out_list.append(p)
+  P = pd.concat(out_list, axis=1)  # index: dst, col: src
+  return P

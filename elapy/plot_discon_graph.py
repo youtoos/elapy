@@ -25,7 +25,10 @@ def plot_discon_graph(D_in):
 
   # dendrogram below min_val
   for i, energy in enumerate(np.diag(D)):
-    ax.plot([i,i], [energy, min_val], c=color)
+    if energy < min_val:
+      ax.plot([i,i], [energy, min_val], c=color)
+    else:
+      ax.plot([i,i], [energy, min_val], c='w', lw=3)
 
   ax.set_xticks(np.arange(len(D)))
   ax.set_xticklabels(D.index)
