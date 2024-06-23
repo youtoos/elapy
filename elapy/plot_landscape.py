@@ -46,7 +46,7 @@ def branching_embedding(Z, z_sr, theta):
       pos_i = pos_df.loc[i]
       th1   = np.arctan((l1 - l2 * np.cos(theta)) / (l2 * np.sin(theta)))
       th2   = theta - th1
-      phi   = np.angle(np.complex(*(pos_i - pos_p)))
+      phi   = np.angle(complex(*(pos_i - pos_p)))
       psi1  = phi + th1
       psi2  = phi - th2
       pos_df.loc[c1] = pos_i + [l1 * np.cos(psi1), l1 * np.sin(psi1)]
@@ -136,7 +136,7 @@ def plot_landscape(D_in, theta=5*np.pi/6):
   for i, sr in pos_df.iloc[:n].iterrows():
     parent = list(G.predecessors(i))[0]
     sr2 = pos_df.loc[parent]
-    phi = np.angle(np.complex(*([sr.x - sr2.x, sr.y- sr2.y])))
+    phi = np.angle(complex(*([sr.x - sr2.x, sr.y- sr2.y])))
     phi += np.pi/2
     ax.text(sr.x + pad * np.cos(phi), sr.y + pad * np.sin(phi), str(i+1),
             ha='center', va='center', color='w')
