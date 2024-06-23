@@ -9,7 +9,8 @@ def plot_trans(freq, trans, trans2):
   fig, (ax1, ax2, ax3) = plt.subplots(figsize=(5,10), nrows=3)
 
   # freq
-  sns.barplot(data=freq.reset_index(), x='index', y='freq', ax=ax1,
+  freq.index.name = 'state_no'
+  sns.barplot(data=freq.reset_index(), x='state_no', y='freq', ax=ax1,
               color=plt.cm.tab10(0))
   ax1.tick_params(length=5)
   ax1.margins(0.05, 0.2)
