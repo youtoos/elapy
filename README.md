@@ -60,6 +60,7 @@ git clone https://github.com/okumakito/elapy.git
   ela.plot_local_min(data, graph)
   ela.plot_basin_graph(graph)
   ela.plot_discon_graph(D)
+  ela.plot_landscape(D)
   ela.plot_trans(freq, trans, trans2)
   ```
  
@@ -71,3 +72,4 @@ git clone https://github.com/okumakito/elapy.git
   ```
 * 3D plot of a basin graph is not provided in this repository.
 * `calc_trans_bm` is added to calculate the transition matrix based on Boltzmann machine.
+* `plot_landscape` is added to show a  two-dimensional landscape reconstructed from the disconnectivity graph. Movement is only allowed on the white lines.
