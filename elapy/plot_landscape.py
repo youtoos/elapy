@@ -3,10 +3,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import networkx as nx
-from scipy.cluster.hierarchy import distance, linkage
+from scipy.cluster.hierarchy import distance, linkage, leaves_list
 sns.set_context('talk', font_scale=0.8)
 
-def branching_embedding(Z, z_sr, theta):
+def _calc_pos_graph(Z, z_sr):
 
   # internal node number (index), child 1, and child 2
   n = len(Z) + 1
@@ -15,45 +15,12 @@ def branching_embedding(Z, z_sr, theta):
                          columns=['c1', 'c2'])
   info_df = info_df.sort_index(ascending=False)
 
-  # parent
-  parent_sr = pd.Series(0, index=range(2*n-2))
-  for i, (c1, c2) in info_df.iterrows():
-    parent_sr[c1] = i
-    parent_sr[c2] = i
-
-  # calculate coordinates  ----------------------------------
-
-  pos_df = pd.DataFrame(0.0, index=range(2*n-1), columns=list('xy'))
-  pos_df.iloc[-1] = (0,0)
-
-  l_min = 0.1 * (z_sr.max() - z_sr.min())
-  for i, (c1, c2) in info_df.iterrows():
-    l1 = np.max([z_sr[i] - z_sr[c1], l_min])
-    l2 = np.max([z_sr[i] - z_sr[c2], l_min])
-
-    if i == 2*n - 2:
-      # first branching
-      th1  = theta / 2
-      th2  = theta / 2
-      phi  = -np.pi/2
-      psi1 = phi + th1
-      psi2 = phi - th2
-      pos_df.loc[c1] = [l1 * np.cos(psi1), l1 * np.sin(psi1)]
-      pos_df.loc[c2] = [l2 * np.cos(psi2), l2 * np.sin(psi2)]
-    else:
-      # second or later branching
-      pos_p = pos_df.loc[parent_sr[i]]
-      pos_i = pos_df.loc[i]
-      th1   = np.arctan((l1 - l2 * np.cos(theta)) / (l2 * np.sin(theta)))
-      th2   = theta - th1
-      phi   = np.angle(complex(*(pos_i - pos_p)))
-      psi1  = phi + th1
-      psi2  = phi - th2
-      pos_df.loc[c1] = pos_i + [l1 * np.cos(psi1), l1 * np.sin(psi1)]
-      pos_df.loc[c2] = pos_i + [l2 * np.cos(psi2), l2 * np.sin(psi2)]
-
-  # add z-coordinates
-  pos_df['z'] = z_sr
+  # target position for each state
+  z_ptp     = z_sr.max() - z_sr.min()
+  theta_arr = 2 * np.pi * (np.argsort(leaves_list(Z)) + 1)/(n+1) + np.pi/2
+  target_df = pd.DataFrame()
+  target_df['x'] = 1.5 * z_ptp * np.cos(theta_arr)
+  target_df['y'] = 1.5 * z_ptp * np.sin(theta_arr)
 
   # generate network
   G = nx.DiGraph()
@@ -61,10 +28,42 @@ def branching_embedding(Z, z_sr, theta):
     G.add_edge(i, c1)
     G.add_edge(i, c2)
 
+  # calculate coordinates  ----------------------------------
+
+  pos_df = pd.DataFrame(0.0, index=range(2*n-1), columns=list('xy'))
+  pos_df.iloc[-1] = (0,0)
+
+  l_min = 0.1 * z_ptp
+  for i, (c1, c2) in info_df.iterrows():
+
+    # edge length
+    l1 = np.max([z_sr[i] - z_sr[c1], l_min])
+    l2 = np.max([z_sr[i] - z_sr[c2], l_min])
+
+    # averaged target position
+    t1_arr = np.array(list(nx.descendants(G, c1)))
+    t2_arr = np.array(list(nx.descendants(G, c2)))
+    t1_arr = t1_arr[t1_arr < n] if len(t1_arr)>0 else np.array([c1])
+    t2_arr = t2_arr[t2_arr < n] if len(t2_arr)>0 else np.array([c2])
+    pos_t1 = target_df.loc[t1_arr].mean()
+    pos_t2 = target_df.loc[t2_arr].mean()
+
+    # edge direction
+    pos_i = pos_df.loc[i]
+    v1    = pos_t1 - pos_i
+    v2    = pos_t2 - pos_i
+
+    # set child positions
+    pos_df.loc[c1] = pos_i + l1 * v1 / np.linalg.norm(v1)
+    pos_df.loc[c2] = pos_i + l2 * v2 / np.linalg.norm(v2)
+
+  # add z-coordinates
+  pos_df['z'] = z_sr
+
   return pos_df, G
 
 
-def plot_landscape(D_in, theta=5*np.pi/6):
+def plot_landscape(D_in):
 
   # hierarchical clustering
   D = D_in.copy()
@@ -76,9 +75,9 @@ def plot_landscape(D_in, theta=5*np.pi/6):
   np.fill_diagonal(D.values, 0)
   Z = linkage(distance.squareform(D))
 
-  # calculate xy-coordinates by brancing embedding
+  # calculate vertex positions and graph
   z_sr = pd.Series(np.concatenate([np.diag(D_in), Z[:,2] + shift]))
-  pos_df, G = branching_embedding(Z, z_sr, theta)
+  pos_df, G = _calc_pos_graph(Z, z_sr)
 
   # calculate plot region
   margin = 0.3
