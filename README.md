@@ -1,5 +1,5 @@
 # About elapy
-This is a Python implementation of Energy Landscape Analysis Toolbox/Toolkit (ELAT). An Ising model is fit to the input data that should be a {0,1}-valued or {-1,1}-valued matrix. From the estimated Ising model, local minimum states, basins of attractions, and a disconnectivity graph that shows the minimum values of the maximum energy of intermediate states passed when moving between local minimum states are calculated. For more details, please see the original repository or the original paper shown below.
+This is a Python implementation of Energy Landscape Analysis Toolbox/Toolkit (ELAT). An Ising model is fit to the input data that should be a {0,1}-valued or {-1,1}-valued matrix. From the estimated Ising model, local minimum states, basins of attractions, and a disconnectivity graph showing energy barriers between local minimum states are calculated. For more details, please see the original repository or the original paper shown below.
 
 The original Matlab codes written by Dr. T. Ezaki are available at: https://github.com/tkEzaki/energy-landscape-analysis.
 
@@ -12,7 +12,7 @@ Japanese documents are also avaiable at the original codes' author's website: ht
 - [Open notebook in GitHub](https://github.com/okumakito/elapy/blob/main/elapy.ipynb) (not executable)
 
 # Required packages
-numpy, scipy, pandas, matplotlib, seaborn, and networkx
+numpy, scipy, pandas, matplotlib, seaborn, networkx, and plotly
 
 # Install
 ```
@@ -61,6 +61,7 @@ git clone https://github.com/okumakito/elapy.git
   ela.plot_basin_graph(graph)
   ela.plot_discon_graph(D)
   ela.plot_landscape(D)
+  ela.plot_landscape3d(D)
   ela.plot_trans(freq, trans, trans2)
   ```
  
@@ -73,3 +74,4 @@ git clone https://github.com/okumakito/elapy.git
 * 3D plot of a basin graph is not provided in this repository.
 * `calc_trans_bm` is added to calculate the transition matrix based on Boltzmann machine.
 * `plot_landscape` is added to show a  two-dimensional landscape reconstructed from the disconnectivity graph. Movement is only allowed on the white lines.
+* `plot_landscape3d` is added to show a  three-dimensional landscape reconstructed from the disconnectivity graph. Movement is only allowed on the white lines.
