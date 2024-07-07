@@ -34,11 +34,15 @@ def _calc_pos_graph(Z, z_sr):
   pos_df.iloc[-1] = (0,0)
 
   l_min = 0.1 * z_ptp
+  def calc_edge_length(i, c):
+    x = z_sr[i] - z_sr[c]
+    return np.max([x, l_min]) if (x>0) or (c<n) else 0
+
   for i, (c1, c2) in info_df.iterrows():
 
     # edge length
-    l1 = np.max([z_sr[i] - z_sr[c1], l_min])
-    l2 = np.max([z_sr[i] - z_sr[c2], l_min])
+    l1 = calc_edge_length(i, c1)
+    l2 = calc_edge_length(i, c2)
 
     # averaged target position
     t1_arr = np.array(list(nx.descendants(G, c1)))

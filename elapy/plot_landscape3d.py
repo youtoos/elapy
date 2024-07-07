@@ -32,11 +32,15 @@ def _calc_pos_graph(Z, z_sr):
   pos_df.iloc[-1] = (0,0)
 
   l_min = 0.1 * z_ptp
+  def calc_edge_length(i, c):
+    x = z_sr[i] - z_sr[c]
+    return np.max([x, l_min]) if (x>0) or (c<n) else 0
+
   for i, (c1, c2) in info_df.iterrows():
 
     # edge length
-    l1 = np.max([z_sr[i] - z_sr[c1], l_min])
-    l2 = np.max([z_sr[i] - z_sr[c2], l_min])
+    l1 = calc_edge_length(i, c1)
+    l2 = calc_edge_length(i, c2)
 
     # averaged target position
     t1_arr = np.array(list(nx.descendants(G, c1)))
@@ -125,12 +129,12 @@ def plot_landscape3d(D_in):
   # create fig
   fig = go.Figure()
 
-  # surcface plot
+  # surface plot
   n_line = 40
-  contours = dict(x=dict(highlight=False, show=True, color='white',
+  contours = dict(x=dict(highlight=False, show=True, color='gray',
                          start=x_min, end=x_max,
                          size=(x_max-x_min)/n_line),
-                  y=dict(highlight=False, show=True, color='white',
+                  y=dict(highlight=False, show=True, color='gray',
                          start=y_min, end=y_max,
                          size=(y_max-y_min)/n_line),
                   z=dict(highlight=False, show=False))
@@ -139,8 +143,8 @@ def plot_landscape3d(D_in):
                            z = zz_arr,
                            colorscale = 'viridis',
                            hoverinfo = 'skip',
-                           opacity = 1,
-                           contours = contours))
+                           contours = contours,
+                           lightposition=dict(x=-10**5,y=10**4,z=0)))
 
   # graph
   dz = 0.005 * zz_arr.ptp()
