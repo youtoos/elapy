@@ -153,6 +153,7 @@ def plot_landscape3d(D_in):
                                y = gy_sub_arr,
                                z = gz_sub_arr + dz,
                                mode = 'lines',
+                               hoverinfo = 'skip',
                                line = dict(width=5, color='white')))
 
   # state number
