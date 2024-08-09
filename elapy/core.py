@@ -197,3 +197,19 @@ def calc_trans_bm(h, W, X):
     out_list.append(p)
   P = pd.concat(out_list, axis=1)  # index: dst, col: src
   return P
+
+def calc_depth_threshold(n, k, n_repeat=100, method='exact', alpha=0.05):
+  np.random.seed(12345)
+  out_list = []
+  for _ in range(n_repeat):
+    X = pd.DataFrame(np.random.randint(2, size=(n,k)))
+    if method == 'exact':
+      h, W = fit_exact(X)
+    else:
+      h, W = fit_approx(X)
+    graph = calc_basin_graph(h, W, X)
+    D = calc_discon_graph(h, W, X, graph)
+    D -= D.values.diagonal()
+    np.fill_diagonal(D.values, None)
+    out_list.append(D.min().values)
+  return pd.Series(np.concatenate(out_list)).quantile(1-alpha)
