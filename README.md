@@ -51,11 +51,11 @@ git clone https://github.com/okumakito/elapy.git
   ```
   freq, trans, trans2 = ela.calc_trans(data, graph)
   ```
-* Calculate transition matrix based on Boltzmann machine.
+* [Optional] Calculate transition matrix based on Boltzmann machine.
   ```
   P = ela.calc_trans_bm(h, W, data)
   ```
-* Calculate the depth threshold (Caution: this function is time consuming).
+* [Optional] Calculate the depth threshold (Caution: this function is time consuming).
   ```
   n, k = data.shape
   th = ela.calc_depth_threshold(n, k)
