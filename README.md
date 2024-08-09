@@ -55,6 +55,12 @@ git clone https://github.com/okumakito/elapy.git
   ```
   P = ela.calc_trans_bm(h, W, data)
   ```
+* calculate depth threshold (Caution: this function is time consuming)
+  ```
+  n, k = data.shape
+  th = ela.calc_depth_threshold(n, k)
+  print(th)
+  ```
 * Plot figures
   ```
   ela.plot_local_min(data, graph)
@@ -72,6 +78,7 @@ git clone https://github.com/okumakito/elapy.git
   ela.plot_basin_graph(graph, original_notation=True)
   ```
 * 3D plot of a basin graph is not provided in this repository.
-* `calc_trans_bm` is added to calculate the transition matrix based on Boltzmann machine. The transition probability is for the case of synchronous updates, that is, when the values of all variables are updated simultaneously. The row number and column number correspond to the destination node number and source node number, respectively. 
+* `calc_trans_bm` is added to calculate the transition matrix based on Boltzmann machine. The transition probability is for the case of synchronous updates, that is, when the values of all variables are updated simultaneously. The row number and column number correspond to the destination node number and source node number, respectively.
+* `calc_depth_threshold` is added to calculate the depth threshold using Monte Carlo method. An energy valley deeper than the threshold is considered to have a significant depth. The depth of a state is defined as the energy gap between the local minimum pattern of the state and the saddle pattern with the minimum energy that connects the state and another state.
 * `plot_landscape` is added to show a  two-dimensional landscape reconstructed from the disconnectivity graph. Movement is only allowed on the white lines.
 * `plot_landscape3d` is added to show a  three-dimensional landscape reconstructed from the disconnectivity graph. Movement is only allowed on the white lines.
