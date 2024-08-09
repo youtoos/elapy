@@ -55,7 +55,7 @@ git clone https://github.com/okumakito/elapy.git
   ```
   P = ela.calc_trans_bm(h, W, data)
   ```
-* Calculate the depth threshold (Caution: this function is time consuming)
+* Calculate the depth threshold (Caution: this function is time consuming).
   ```
   n, k = data.shape
   th = ela.calc_depth_threshold(n, k)
