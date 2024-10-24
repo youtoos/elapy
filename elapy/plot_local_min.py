@@ -18,7 +18,7 @@ def plot_local_min(data, graph):
               cbar_kws=dict(ticks=[0.25,0.75], shrink=0.25, aspect=2))
   ax.tick_params(length=0)
   ax.set_yticklabels(ax.get_yticklabels(), rotation=0)
-  ax.set_title('Local minimum states', fontsize=16, pad=10)
+  ax.set_title('Local minimum patterns', fontsize=16, pad=10)
   ax.set_xlabel('State number')
   ax.set_ylabel(None)
   cax = ax.collections[0].colorbar.ax

@@ -52,6 +52,7 @@ def fit_approx(X_in, max_iter=10**3, alpha=0.9):
     Y  = np.tanh(W.dot(X).T + h) # k * n
     h += alpha * (X_mean - Y.mean(axis=0))
     Z  = X.dot(Y) / k
+    Z.columns = Z.index
     Z  = (Z + Z.T) / 2
     np.fill_diagonal(Z.values, 0)
     W += alpha * (X_corr - Z)

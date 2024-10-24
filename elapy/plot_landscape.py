@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import networkx as nx
 from scipy.cluster.hierarchy import distance, linkage, leaves_list
+from matplotlib import ticker
 sns.set_context('talk', font_scale=0.8)
 
 def _calc_pos_graph(Z, z_sr):
@@ -120,6 +121,8 @@ def plot_landscape(D_in):
   cbar = fig.colorbar(g, shrink=0.6, aspect=10)
   cbar.outline.set_linewidth(1)
   cbar.ax.tick_params(length=2, width=1)
+  cbar.locator = ticker.MaxNLocator(nbins=5)
+  cbar.update_ticks()
 
   # graph
   pos_dict = {i:[x,y] for i, (x,y,z) in pos_df.iterrows()}
