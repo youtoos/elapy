@@ -147,7 +147,7 @@ def plot_landscape3d(D_in):
                            lightposition=dict(x=-10**5,y=10**4,z=0)))
 
   # graph
-  dz = 0.005 * zz_arr.ptp()
+  dz = 0.005 * np.ptp(zz_arr)
   for gx_sub_arr, gy_sub_arr, gz_sub_arr in zip(gx_arr, gy_arr, gz_arr):
     fig.add_trace(go.Scatter3d(x = gx_sub_arr,
                                y = gy_sub_arr,
@@ -157,7 +157,7 @@ def plot_landscape3d(D_in):
                                line = dict(width=5, color='white')))
 
   # state number
-  dz = 0.02 * zz_arr.ptp()
+  dz = 0.02 * np.ptp(zz_arr)
   pos_sub_df = pos_df.iloc[:n]
   fig.add_trace(go.Scatter3d(x = pos_sub_df.x,
                              y = pos_sub_df.y,
